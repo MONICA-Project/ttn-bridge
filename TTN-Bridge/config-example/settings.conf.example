@@ -1,0 +1,13 @@
+﻿[logging]
+path=/var/log/ttnbridge.log
+
+[from]
+type=mqtt
+server=eu.thethings.network
+user=<Application ID>
+pass=<default key>
+topic=<Application ID>/devices/+/up
+
+[to]
+type=mqtt
+server=localhost
