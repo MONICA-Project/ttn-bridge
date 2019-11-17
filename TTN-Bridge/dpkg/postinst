@@ -1,0 +1,13 @@
+#!/bin/bash
+
+DEBNAME="ttnbridge"
+
+systemctl enable $DEBNAME
+systemctl daemon-reload
+
+touch /var/log/ttnbridge.log
+
+if [ -f /tmp/$DEBNAME_service_runner ]; then
+    service $DEBNAME start
+    rm /tmp/$DEBNAME_service_runner
+fi

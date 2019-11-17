@@ -1,0 +1,9 @@
+Package: ttnbridge
+Version: x.x-x
+Section: base
+Priority: optional
+Architecture: any
+Depends: mono-runtime (>= 5.18), libmono-posix4.0-cil (>= 5.18)
+Maintainer: BlubbFish <dev@blubbfish.net>
+Description: TTN-Bridge
+ Converts tracking data from TTN mqtt to local mqtt

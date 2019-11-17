@@ -47,7 +47,19 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="CHANGELOG.md" />
     <None Include="config-example\settings.conf.example" />
+    <None Include="CONTRIBUTING.md" />
+    <None Include="dpkg\control" />
+    <None Include="dpkg\create-Builds.bat" />
+    <None Include="dpkg\make-deb.sh" />
+    <None Include="dpkg\monicascral-logrotate" />
+    <None Include="dpkg\monicascral.service" />
+    <None Include="dpkg\postinst" />
+    <None Include="dpkg\preinst" />
+    <None Include="dpkg\prerm" />
+    <None Include="LICENSE" />
+    <None Include="README.md" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Librarys\litjson\litjson\litjson_4.7.1.csproj">
