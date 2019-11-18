@@ -48,13 +48,15 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="CHANGELOG.md" />
-    <None Include="config-example\settings.conf.example" />
+    <None Include="config-example\settings.conf.example">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="CONTRIBUTING.md" />
     <None Include="dpkg\control" />
     <None Include="dpkg\create-Builds.bat" />
     <None Include="dpkg\make-deb.sh" />
-    <None Include="dpkg\monicascral-logrotate" />
-    <None Include="dpkg\monicascral.service" />
+    <None Include="dpkg\logrotate-ttnbridge" />
+    <None Include="dpkg\service-ttnbridge" />
     <None Include="dpkg\postinst" />
     <None Include="dpkg\preinst" />
     <None Include="dpkg\prerm" />

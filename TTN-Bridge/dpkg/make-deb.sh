@@ -47,5 +47,5 @@ cp "logrotate-$DEBNAME" "$LOGROTATE/$DEBNAME.conf"
 chmod 644 $LOGROTATE/*
 
 dpkg-deb --build $ROOT
-mv $HOMEDIR/deb.deb ../../../Builds/"$ARCHT-$DEBNAME_$VMAJOR.$VMINOR-$VBUILD.deb"
+mv $HOMEDIR/deb.deb ../../../Builds/"$ARCHT-""$DEBNAME""_$VMAJOR.$VMINOR-$VBUILD.deb"
 rm $HOMEDIR/deb -r

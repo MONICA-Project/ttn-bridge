@@ -5,8 +5,8 @@ Description=TTN-Bridge
 After=network-online.target
 
 [Service]
-User=root
-Group=root
+User=ttnbridgebot
+Group=ttnbridgebot
 WorkingDirectory=/usr/local/bin/ttnbridge
 ExecStart=/usr/bin/mono /usr/local/bin/ttnbridge/TTN-Bridge.exe
 KillMode=control-group

@@ -6,6 +6,10 @@ systemctl enable $DEBNAME
 systemctl daemon-reload
 
 touch /var/log/ttnbridge.log
+chown ttnbridgebot:ttnbridgebot /var/log/ttnbridge.log
+chmod 644 /var/log/ttnbridge.log
+
+chown -R ttnbridgebot:ttnbridgebot /usr/local/bin/$DEBNAME
 
 if [ -f /tmp/$DEBNAME_service_runner ]; then
     service $DEBNAME start
