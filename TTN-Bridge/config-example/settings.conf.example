@@ -1,7 +1,14 @@
 ﻿[logging]
 path=/var/log/ttnbridge.log
 
-[from]
+[tracker]
+type=mqtt
+server=eu.thethings.network
+user=<Application ID>
+pass=<default key>
+topic=<Application ID>/devices/+/up
+
+[sensors]
 type=mqtt
 server=eu.thethings.network
 user=<Application ID>

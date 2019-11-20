@@ -4,11 +4,13 @@ using System.Threading.Tasks;
 using BlubbFish.Utils;
 using BlubbFish.Utils.IoT.Bots;
 using BlubbFish.Utils.IoT.Connector;
+using BlubbFish.Utils.IoT.Events;
 using LitJson;
 
 namespace Fraunhofer.Fit.IoT.TTN.Bridge {
   class Program : ABot {
-    private ADataBackend ttn;
+    private ADataBackend ttnt;
+    private ADataBackend ttns;
     private ADataBackend mqtt;
 
     static void Main(String[] args) => new Program();
@@ -28,24 +30,51 @@ namespace Fraunhofer.Fit.IoT.TTN.Bridge {
       this.Dispose();
     }
 
-    private void Attach() {
-      this.ttn.MessageIncomming += this.Ttn_MessageIncomming;
-    }
-
     private void Connect(InIReader settings) {
-      this.ttn = (ADataBackend)ABackend.GetInstance(settings.GetSection("from"), ABackend.BackendType.Data);
+      this.ttnt = (ADataBackend)ABackend.GetInstance(settings.GetSection("tracker"), ABackend.BackendType.Data);
+      this.ttns = (ADataBackend)ABackend.GetInstance(settings.GetSection("sensors"), ABackend.BackendType.Data);
       this.mqtt = (ADataBackend)ABackend.GetInstance(settings.GetSection("to"), ABackend.BackendType.Data);
     }
 
-    private async void Ttn_MessageIncomming(Object sender, BlubbFish.Utils.IoT.Events.BackendEvent e) => await Task.Run(() => {
-      Tuple<String, String> json = this.ConvertJson(e.Message);
+    private void Attach() {
+      this.ttnt.MessageIncomming += this.TTNTrackerMessageIncomming;
+      this.ttns.MessageIncomming += this.TTNSensorsMessageIncomming;
+    }
+
+    private async void TTNSensorsMessageIncomming(Object sender, BackendEvent e) => await Task.Run(() => {
+      Tuple<String, String> json = this.ConvertSensorJson(e.Message);
+      if (json != null) {
+        this.mqtt.Send("lora/sensor/" + json.Item1, json.Item2);
+        Console.WriteLine("Umweltdaten konvertiert.");
+      }
+    });
+
+    private async void TTNTrackerMessageIncomming(Object sender, BackendEvent e) => await Task.Run(() => {
+      Tuple<String, String> json = this.ConvertTrackerJson(e.Message);
       if (json != null) {
         this.mqtt.Send("lora/data/" + json.Item1, json.Item2);
         Console.WriteLine("Koordinate konvertiert.");
       }
     });
 
-    private Tuple<String, String> ConvertJson(String jsonstring) {
+    private Tuple<String, String> ConvertSensorJson(String jsonstring) {
+      try {
+        JsonData json = JsonMapper.ToObject(jsonstring);
+        String newjson = JsonMapper.ToJson(new Dictionary<String, Object>() {
+          {"Name", json["dev_id"].ToString() },
+          {"Rssi", Double.Parse(json["metadata"]["gateways"][0]["rssi"].ToString()) },
+          {"Snr", Double.Parse(json["metadata"]["gateways"][0]["snr"].ToString()) },
+          {"Temperature", Double.Parse(json["payload_fields"]["temperature"].ToString()) },
+          {"Humidity", Double.Parse(json["payload_fields"]["humidity"].ToString()) },
+          {"Windspeed", Double.Parse(json["payload_fields"]["windspeed"].ToString()) },
+          {"Receivedtime", DateTime.UtcNow } 
+        });
+        return new Tuple<String, String>(json["dev_id"].ToString(), newjson);
+      } catch { }
+      return null;
+    }
+
+    private Tuple<String, String> ConvertTrackerJson(String jsonstring) {
       try {
         JsonData json = JsonMapper.ToObject(jsonstring);
         String newjson = JsonMapper.ToJson(new Dictionary<String, Object>() {
@@ -71,7 +100,8 @@ namespace Fraunhofer.Fit.IoT.TTN.Bridge {
     }
 
     public override void Dispose() {
-      this.ttn.Dispose();
+      this.ttnt.Dispose();
+      this.ttns.Dispose();
       this.mqtt.Dispose();
       base.Dispose();
     }
