@@ -13,7 +13,7 @@ namespace Fraunhofer.Fit.IoT.TTN.Bridge {
     private ADataBackend ttns;
     private ADataBackend mqtt;
 
-    static void Main(String[] args) => new Program();
+    static void Main(String[] _1) => new Program();
 
     Program() {
       InIReader.SetSearchPath(new List<String>() { "/etc/ttnbridge", Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\ttnbridge" });
@@ -41,7 +41,7 @@ namespace Fraunhofer.Fit.IoT.TTN.Bridge {
       this.ttns.MessageIncomming += this.TTNSensorsMessageIncomming;
     }
 
-    private async void TTNSensorsMessageIncomming(Object sender, BackendEvent e) => await Task.Run(() => {
+    private async void TTNSensorsMessageIncomming(Object _1, BackendEvent e) => await Task.Run(() => {
       Tuple<String, String> json = this.ConvertSensorJson(e.Message);
       if (json != null) {
         this.mqtt.Send("lora/sensor/" + json.Item1, json.Item2);
@@ -49,7 +49,7 @@ namespace Fraunhofer.Fit.IoT.TTN.Bridge {
       }
     });
 
-    private async void TTNTrackerMessageIncomming(Object sender, BackendEvent e) => await Task.Run(() => {
+    private async void TTNTrackerMessageIncomming(Object _1, BackendEvent e) => await Task.Run(() => {
       Tuple<String, String> json = this.ConvertTrackerJson(e.Message);
       if (json != null) {
         this.mqtt.Send("lora/data/" + json.Item1, json.Item2);

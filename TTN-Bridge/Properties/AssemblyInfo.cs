@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿#if !NETCOREAPP
+using System.Reflection;
 using System.Resources;
 using System.Runtime.InteropServices;
 
@@ -10,7 +11,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Fraunhofer FIT")]
 [assembly: AssemblyProduct("TTN-Bridge")]
-[assembly: AssemblyCopyright("Copyright © 2019 - 15.11.2019")]
+[assembly: AssemblyCopyright("Copyright © Fraunhofer FIT, BlubbFish 2019 - 15.11.2019")]
 [assembly: AssemblyTrademark("Fraunhofer FIT, BlubbFish")]
 [assembly: AssemblyCulture("")]
 [assembly: NeutralResourcesLanguage("de-DE")]
@@ -35,7 +36,7 @@ using System.Runtime.InteropServices;
 // [assembly: AssemblyVersion("1.0.*")]
 [assembly: AssemblyVersion("1.1.0")]
 [assembly: AssemblyFileVersion("1.1.0")]
-
+#endif
 /*
  * 1.0.0 First Version
  * 1.1.0 Add support for sensordata
