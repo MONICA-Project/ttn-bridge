@@ -32,7 +32,14 @@
     <ProjectReference Include="..\..\Utils\Utils-IoT\Utils-IoT\Utils-IoT_Core.csproj" />
     <ProjectReference Include="..\..\Utils\Utils\Utils\Utils_Core.csproj" />
   </ItemGroup>
-
+  
+  <ItemGroup>
+    <Content Include="../CHANGELOG.md" />
+	<Content Include="../CONTRIBUTING.md" />
+	<Content Include="../LICENSE" />
+	<Content Include="../README.md" />
+  </ItemGroup>
+  
   <ItemGroup>
     <None Update="config-example\settings.conf.example">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
