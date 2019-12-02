@@ -1,0 +1,28 @@
+name: .NET Core
+
+on: [push]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v1
+      with:
+        submodules: true
+    - name: Setup .NET Core
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 3.0.100
+    - name: Build with dotnet
+      run: dotnet build TTN-Bridge_Core.sln --configuration Release
+      working-directory: TTN-Bridge
+    - name: Create deb files
+      run: |
+        mkdir ../../../Builds 
+        chmod oug+x make-deb-core.sh 
+        ./make-deb-core.sh amd64 
+        ./make-deb-core.sh armhf
+      working-directory: ./TTN-Bridge/TTN-Bridge/dpkg
+      shell: bash

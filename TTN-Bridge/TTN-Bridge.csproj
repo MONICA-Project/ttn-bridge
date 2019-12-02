@@ -64,6 +64,7 @@
 	<Content Include="..\CONTRIBUTING.md" />
 	<Content Include="..\LICENSE" />
 	<Content Include="..\README.md" />
+	<Content Include="..\.github\workflows\dotnetcore.yml" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Librarys\litjson\litjson\litjson_4.7.1.csproj">
