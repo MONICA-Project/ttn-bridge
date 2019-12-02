@@ -1,26 +1,37 @@
-name: .NET Core
+name: Build TTN-Bridge
 
 on: [push]
 
 jobs:
-  build:
-
+  checkout:
+    name: Checkout Project
     runs-on: ubuntu-latest
-
     steps:
-    - name: Checkout Parent
+    - name: Checkout parent project with dependencys
       uses: actions/checkout@v1
       with:
         repository: MONICA-Project/ttn-bridge-project
         ref: refs/heads/master
         submodules: true
-    - name: Setup .NET Core
+
+  build:
+    name: Build project with dotnet
+    runs-on: ubuntu-latest
+    needs: checkout
+    steps:
+    - name: Install dotnet
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: 3.0.100
     - name: Build with dotnet
       run: dotnet build TTN-Bridge_Core.sln --configuration Release
-      working-directory: TTN-Bridge
+      working-directory: ./TTN-Bridge
+
+  pack:
+    name: Pack project together
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
     - name: Create deb files
       run: |
         mkdir ../../../Builds 
