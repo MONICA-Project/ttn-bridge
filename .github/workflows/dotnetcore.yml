@@ -34,7 +34,7 @@ jobs:
         VBUILD=$(grep -e "<Version>" ../TTN-Bridge_Core.csproj | cut -d'>' -f 2 | cut -d'<' -f 1 | cut -d'.' -f 3)
         TARGETFILE="ttnbridge_$VMAJOR.$VMINOR-$VBUILD.deb"
         echo "##[set-output name=debuilderfile;]$TARGETFILE"
-        echo "##[set-output name=builddaterelease;]$(date --iso-8601=s)"
+        echo "##[set-output name=builddaterelease;]$(date +"%F_%H%M%S")"
       id: create_deb
       working-directory: ../ttn-bridge-project/TTN-Bridge/TTN-Bridge/dpkg
 
