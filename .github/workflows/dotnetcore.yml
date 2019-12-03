@@ -30,6 +30,11 @@ jobs:
         chmod oug+x make-deb-core.sh 
         ./make-deb-core.sh amd64 
         ./make-deb-core.sh armhf
+        VMAJOR=$(grep -e "<Version>" ../$CSPROJFILE | cut -d'>' -f 2 | cut -d'<' -f 1 | cut -d'.' -f 1)
+        VMINOR=$(grep -e "<Version>" ../$CSPROJFILE | cut -d'>' -f 2 | cut -d'<' -f 1 | cut -d'.' -f 2)
+        VBUILD=$(grep -e "<Version>" ../$CSPROJFILE | cut -d'>' -f 2 | cut -d'<' -f 1 | cut -d'.' -f 3)
+        TARGETFILE="ttnbridge_$VMAJOR.$VMINOR-$VBUILD.deb"
+        echo "##[set-output name=debuilderfile;]$TARGETFILE"
       working-directory: ../ttn-bridge-project/TTN-Bridge/TTN-Bridge/dpkg
       shell: bash
 
@@ -40,7 +45,7 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         tag_name: nightly
-        release_name: Nightly Release ${{ github.ref }}
+        release_name: Nightly Release from master
         body: |
           '# NIGHTLY'
           This is a nightly Release. It may be not working properly.
