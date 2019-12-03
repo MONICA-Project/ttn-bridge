@@ -18,25 +18,10 @@ jobs:
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: 3.0.100
-        
-    - name: Witch dir 1
-      run: |
-        ls
-        pwd
-        echo $(pwd)
-      shell: bash
-      
-    - name: Witch dir 1
-      run: |
-        ls
-        pwd
-        echo $(pwd)
-      working-directory: ../ttn-bridge-project/TTN-Bridge
-      shell: bash
 
     - name: Build with dotnet
       run: dotnet build TTN-Bridge_Core.sln --configuration Release
-      working-directory: ./TTN-Bridge
+      working-directory: ../ttn-bridge-project/TTN-Bridge
 
     - name: Create deb files
       run: |
@@ -44,5 +29,5 @@ jobs:
         chmod oug+x make-deb-core.sh 
         ./make-deb-core.sh amd64 
         ./make-deb-core.sh armhf
-      working-directory: ./TTN-Bridge/TTN-Bridge/dpkg
+      working-directory: ../ttn-bridge-project/TTN-Bridge/TTN-Bridge/dpkg
       shell: bash
