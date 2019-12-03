@@ -34,6 +34,7 @@ jobs:
         VBUILD=$(grep -e "<Version>" ../TTN-Bridge_Core.csproj | cut -d'>' -f 2 | cut -d'<' -f 1 | cut -d'.' -f 3)
         TARGETFILE="ttnbridge_$VMAJOR.$VMINOR-$VBUILD.deb"
         echo "##[set-output name=debuilderfile;]$TARGETFILE"
+        echo "##[set-output name=builddaterelease;]$(date --iso-8601=s)"
       id: create_deb
       working-directory: ../ttn-bridge-project/TTN-Bridge/TTN-Bridge/dpkg
 
@@ -43,7 +44,7 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        tag_name: ${{ github.sha }}
+        tag_name: ${{ steps.create_deb.outputs.builddaterelease }}
         release_name: Nightly Release from master
         body: This is a nightly Release. It may be not working properly.
         draft: false
