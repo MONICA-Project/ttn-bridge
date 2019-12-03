@@ -31,7 +31,7 @@ jobs:
         ls
         pwd
         echo $(pwd)
-      working-directory: ./TTN-Bridge
+      working-directory: ../ttn-bridge-project/TTN-Bridge
       shell: bash
 
     - name: Build with dotnet
