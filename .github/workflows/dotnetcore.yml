@@ -24,6 +24,7 @@ jobs:
       working-directory: ../ttn-bridge-project/TTN-Bridge
 
     - name: Create deb files
+	  id: create_deb
       run: |
         mkdir ../../../Builds 
         chmod oug+x make-deb-core.sh 
@@ -31,3 +32,31 @@ jobs:
         ./make-deb-core.sh armhf
       working-directory: ../ttn-bridge-project/TTN-Bridge/TTN-Bridge/dpkg
       shell: bash
+	  outputs:
+		debuilderfile:
+		  description: 'The file that was created'
+
+	- name: Create release
+	  id: nightly_release
+	  uses: actions/create-release@v1
+	  env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+	  with:
+	    tag_name: nightly
+		release_name: Nightly Release ${{ github.ref }}
+		body: |
+          '# NIGHTLY'
+	       This is a nightly Release. It may be not working properly.
+		draft: false
+		prerelease: true
+
+	- name: Upload Release Asset amd64
+	  id: upload-release-asset-amd64
+	  uses: actions/upload-release-asset@v1.0.1
+	  env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+	    upload_url: ${{ steps.nightly_release.outputs.upload_url }}
+		asset_path: ../ttn-bridge-project/Builds/amd64-${{ steps.create_deb.outputs.debuilderfile }}
+		asset_name: amd64-${{ steps.create_deb.outputs.debuilderfile }}
+		asset_content_type: application/x-deb
