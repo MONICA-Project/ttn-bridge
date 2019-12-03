@@ -60,3 +60,16 @@ jobs:
         asset_path: ../ttn-bridge-project/Builds/amd64-${{ steps.create_deb.outputs.debuilderfile }}
         asset_name: amd64-${{ steps.create_deb.outputs.debuilderfile }}
         asset_content_type: application/x-deb
+        
+    - name: Upload Release Asset armhf
+      id: upload-release-asset-armhf
+      uses: actions/upload-release-asset@v1.0.1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.nightly_release.outputs.upload_url }}
+        asset_path: ../ttn-bridge-project/Builds/armhf-${{ steps.create_deb.outputs.debuilderfile }}
+        asset_name: armhf-${{ steps.create_deb.outputs.debuilderfile }}
+        asset_content_type: application/x-deb
+
+  
