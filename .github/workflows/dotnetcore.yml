@@ -18,6 +18,21 @@ jobs:
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: 3.0.100
+        
+    - name: Witch dir 1
+      run: |
+        ls
+        pwd
+        echo $(pwd)
+      shell: bash
+      
+    - name: Witch dir 1
+      run: |
+        ls
+        pwd
+        echo $(pwd)
+      working-directory: ./TTN-Bridge
+      shell: bash
 
     - name: Build with dotnet
       run: dotnet build TTN-Bridge_Core.sln --configuration Release
