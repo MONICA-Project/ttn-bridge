@@ -24,7 +24,6 @@ jobs:
       working-directory: ../ttn-bridge-project/TTN-Bridge
 
     - name: Create deb files
-      id: create_deb
       run: |
         mkdir ../../../Builds 
         chmod oug+x make-deb-core.sh 
@@ -35,8 +34,8 @@ jobs:
         VBUILD=$(grep -e "<Version>" ../TTN-Bridge_Core.csproj | cut -d'>' -f 2 | cut -d'<' -f 1 | cut -d'.' -f 3)
         TARGETFILE="ttnbridge_$VMAJOR.$VMINOR-$VBUILD.deb"
         echo "##[set-output name=debuilderfile;]$TARGETFILE"
+      id: create_deb
       working-directory: ../ttn-bridge-project/TTN-Bridge/TTN-Bridge/dpkg
-      shell: bash
 
     - name: Create release
       id: nightly_release
@@ -46,9 +45,7 @@ jobs:
       with:
         tag_name: ${{ github.sha }}
         release_name: Nightly Release from master
-        body: |
-          '# NIGHTLY'
-          This is a nightly Release. It may be not working properly.
+        body: This is a nightly Release. It may be not working properly.
         draft: false
         prerelease: true
         
