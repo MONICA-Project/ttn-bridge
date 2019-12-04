@@ -94,14 +94,18 @@ jobs:
     - name: Checkout last versions
       run: git -C TTN-Bridge checkout --progress --force ${{ github.sha }}
       working-directory: ../ttn-bridge-project
-      
-    - name: Docker-Compose build
-      run: docker-compose build
+
+    - name: Docker build
+      id: docker_build
+      run: |
+        DOCKERTAG=$(date +%Y%m%d%H%M%S)
+        echo "##[set-output name=dockertag;]$DOCKERTAG"
+        docker build . -t monicaproject/ttn-bridge:latest -t monicaproject/ttn-bridge:$DOCKERTAG
       working-directory: ../ttn-bridge-project
 
     - name: Docker-Compose Publish
       run: |
         echo ${{ secrets.DOCKER_PASSWORD }} | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin ${INPUT_REGISTRY}
         docker push monicaproject/ttn-bridge:latest
-        docker push monicaproject/ttn-bridge:$(date +"%F_%H%M%S")
+        docker push monicaproject/ttn-bridge:${{ steps.docker_build.outputs.dockertag }}
       working-directory: ../ttn-bridge-project
