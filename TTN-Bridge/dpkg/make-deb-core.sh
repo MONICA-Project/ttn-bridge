@@ -67,6 +67,8 @@ dpkg-deb --build $ROOT
 
 echo "Build deb packet."
 
+
+TARGETFILE="$DEBNAME""_$VMAJOR.$VMINOR-$VBUILD.deb"
 mv $HOMEDIR/deb.deb "../../../Builds/$ARCHT-$TARGETFILE"
 
 echo "Move $ARCHT-$TARGETFILE to Builds."
@@ -75,5 +77,5 @@ rm $HOMEDIR/deb -r
 
 echo "Remove $HOMEDIR/deb."
 
-TARGETFILE="$DEBNAME""_$VMAJOR.$VMINOR-$VBUILD.deb"
-echo "::set-output name=debuilderfile::$TARGETFILE"
+echo "##[set-output name=debuilderfile;]$TARGETFILE"
+echo "##[set-output name=builddaterelease;]$(date +"%F_%H%M%S")"

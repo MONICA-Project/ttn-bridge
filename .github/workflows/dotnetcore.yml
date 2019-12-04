@@ -90,3 +90,10 @@ jobs:
     - name: Docker-Compose build
       run: docker-compose build
       working-directory: ../ttn-bridge-project
+
+    - name: Docker-Compose Publish
+      run: |
+        echo ${{ secrets.DOCKER_PASSWORD }} | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin ${INPUT_REGISTRY}
+        docker push
+        docker push monicaproject/ttn-bridge:${{ steps.create_deb.outputs.builddaterelease }}
+      working-directory: ../ttn-bridge-project
