@@ -15,9 +15,7 @@ jobs:
         submodules: true
 
     - name: Checkout last versions
-      run: |
-        chmod oug+x update.sh
-        ./update.sh git
+      run: git -C TTN-Bridge checkout --progress --force ${{ github.sha }}
       working-directory: ../ttn-bridge-project
 
     - name: Install dotnet
@@ -90,12 +88,11 @@ jobs:
       uses: actions/checkout@v1
       with:
         repository: MONICA-Project/ttn-bridge-project
+        ref: refs/heads/master
         submodules: true
 
     - name: Checkout last versions
-      run: |
-        chmod oug+x update.sh
-        ./update.sh git
+      run: git -C TTN-Bridge checkout --progress --force ${{ github.sha }}
       working-directory: ../ttn-bridge-project
       
     - name: Docker-Compose build
