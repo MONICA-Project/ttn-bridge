@@ -1,10 +1,10 @@
-name: Build TTN-Bridge
+name: Build, Test, Publish and Dockerise TTN-Bridge
 
 on: [push]
 
 jobs:
   build:
-    name: Build pack and release
+    name: Build, pack and release
     runs-on: ubuntu-latest
     steps:
     - name: Checkout parent project with dependencys
@@ -24,6 +24,7 @@ jobs:
       working-directory: ../ttn-bridge-project/TTN-Bridge
 
     - name: Create deb files
+      if: success()
       run: |
         mkdir ../../../Builds 
         chmod oug+x make-deb-core.sh 
@@ -39,6 +40,7 @@ jobs:
       working-directory: ../ttn-bridge-project/TTN-Bridge/TTN-Bridge/dpkg
 
     - name: Create release
+      if: success()
       id: nightly_release
       uses: actions/create-release@v1
       env:
@@ -51,6 +53,7 @@ jobs:
         prerelease: true
         
     - name: Upload Release Asset amd64
+      if: success()
       id: upload-release-asset-amd64
       uses: actions/upload-release-asset@v1.0.1
       env:
@@ -62,6 +65,7 @@ jobs:
         asset_content_type: application/x-deb
         
     - name: Upload Release Asset armhf
+      if: success()
       id: upload-release-asset-armhf
       uses: actions/upload-release-asset@v1.0.1
       env:
@@ -72,4 +76,17 @@ jobs:
         asset_name: armhf-${{ steps.create_deb.outputs.debuilderfile }}
         asset_content_type: application/x-deb
 
-  
+  docker:
+    name: Build and push dockerfile
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout parent project with dependencys
+      uses: actions/checkout@v1
+      with:
+        repository: MONICA-Project/ttn-bridge-project
+        ref: refs/heads/master
+        submodules: true
+      
+    - name: Docker-Compose build
+      run: docker-compose build
+      working-directory: ../ttn-bridge-project
