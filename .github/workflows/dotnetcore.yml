@@ -14,6 +14,12 @@ jobs:
         ref: refs/heads/master
         submodules: true
 
+    - name: Checkout last versions
+      run: |
+        chmod oug+x update.sh
+        ./update.sh git
+      working-directory: ../ttn-bridge-project
+
     - name: Install dotnet
       uses: actions/setup-dotnet@v1
       with:
@@ -84,8 +90,13 @@ jobs:
       uses: actions/checkout@v1
       with:
         repository: MONICA-Project/ttn-bridge-project
-        ref: refs/heads/master
         submodules: true
+
+    - name: Checkout last versions
+      run: |
+        chmod oug+x update.sh
+        ./update.sh git
+      working-directory: ../ttn-bridge-project
       
     - name: Docker-Compose build
       run: docker-compose build
@@ -94,6 +105,6 @@ jobs:
     - name: Docker-Compose Publish
       run: |
         echo ${{ secrets.DOCKER_PASSWORD }} | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin ${INPUT_REGISTRY}
-        docker push
-        docker push monicaproject/ttn-bridge:${{ steps.create_deb.outputs.builddaterelease }}
+        docker push monicaproject/ttn-bridge:latest
+        docker push monicaproject/ttn-bridge:$(date +"%F_%H%M%S")
       working-directory: ../ttn-bridge-project
