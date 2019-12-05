@@ -13,7 +13,7 @@ The project documentation is available on the [Wiki](https://github.com/MONICA-P
 ## Deployment
 <!-- Deployment/Installation instructions. If this is software library, change this section to "Usage" and give usage examples -->
 
-This repository is only for containing the code from TTN-Bridge. If you want to develop, please goto the [Lora-Scral-Project](https://github.com/MONICA-Project/ttn-bridge-project). This repository contains all references as github submodules, even this one.
+This repository is only for containing the code from TTN-Bridge. If you want to develop, please goto the [ttn-bridge-project](https://github.com/MONICA-Project/ttn-bridge-project). This repository contains all references as github submodules, even this one.
 
 ## Development
 <!-- Developer instructions. -->
@@ -31,7 +31,6 @@ This projects depends on different librarys.
 
 ##### External
 * litjson
-* Mono.Posix
 * M2Mqtt
 
 ## Contributing

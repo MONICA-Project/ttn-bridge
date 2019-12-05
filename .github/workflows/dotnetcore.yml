@@ -24,22 +24,16 @@ jobs:
         dotnet-version: 3.0.100
 
     - name: Build with dotnet
-      run: dotnet build TTN-Bridge_Core.sln --configuration Release
+      run: dotnet build TTN-Bridge.sln --configuration Release
       working-directory: ../ttn-bridge-project/TTN-Bridge
 
     - name: Create deb files
       if: success()
       run: |
         mkdir ../../../Builds 
-        chmod oug+x make-deb-core.sh 
-        ./make-deb-core.sh amd64 
-        ./make-deb-core.sh armhf
-        VMAJOR=$(grep -e "<Version>" ../TTN-Bridge_Core.csproj | cut -d'>' -f 2 | cut -d'<' -f 1 | cut -d'.' -f 1)
-        VMINOR=$(grep -e "<Version>" ../TTN-Bridge_Core.csproj | cut -d'>' -f 2 | cut -d'<' -f 1 | cut -d'.' -f 2)
-        VBUILD=$(grep -e "<Version>" ../TTN-Bridge_Core.csproj | cut -d'>' -f 2 | cut -d'<' -f 1 | cut -d'.' -f 3)
-        TARGETFILE="ttnbridge_$VMAJOR.$VMINOR-$VBUILD.deb"
-        echo "##[set-output name=debuilderfile;]$TARGETFILE"
-        echo "##[set-output name=builddaterelease;]$(date +"%F_%H%M%S")"
+        chmod oug+x make-deb.sh 
+        ./make-deb.sh amd64 
+        ./make-deb.sh armhf
       id: create_deb
       working-directory: ../ttn-bridge-project/TTN-Bridge/TTN-Bridge/dpkg
 
@@ -51,12 +45,12 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         tag_name: ${{ steps.create_deb.outputs.builddaterelease }}
-        release_name: Nightly Release from master
-        body: This is a nightly Release. It may be not working properly.
+        release_name: Nightly from master
+        body: This is a nightly release. It may be not working properly.
         draft: false
         prerelease: true
         
-    - name: Upload Release Asset amd64
+    - name: Upload release asset amd64
       if: success()
       id: upload-release-asset-amd64
       uses: actions/upload-release-asset@v1.0.1
@@ -68,7 +62,7 @@ jobs:
         asset_name: amd64-${{ steps.create_deb.outputs.debuilderfile }}
         asset_content_type: application/x-deb
         
-    - name: Upload Release Asset armhf
+    - name: Upload release asset armhf
       if: success()
       id: upload-release-asset-armhf
       uses: actions/upload-release-asset@v1.0.1
@@ -103,9 +97,17 @@ jobs:
         docker build . -t monicaproject/ttn-bridge:latest -t monicaproject/ttn-bridge:$DOCKERTAG
       working-directory: ../ttn-bridge-project
 
-    - name: Docker-Compose Publish
+    - name: Docker-compose publish
+      if: success()
       run: |
         echo ${{ secrets.DOCKER_PASSWORD }} | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin ${INPUT_REGISTRY}
         docker push monicaproject/ttn-bridge:latest
         docker push monicaproject/ttn-bridge:${{ steps.docker_build.outputs.dockertag }}
       working-directory: ../ttn-bridge-project
+
+# VMAJOR=$(grep -e "<Version>" ../TTN-Bridge_Core.csproj | cut -d'>' -f 2 | cut -d'<' -f 1 | cut -d'.' -f 1)
+# VMINOR=$(grep -e "<Version>" ../TTN-Bridge_Core.csproj | cut -d'>' -f 2 | cut -d'<' -f 1 | cut -d'.' -f 2)
+# VBUILD=$(grep -e "<Version>" ../TTN-Bridge_Core.csproj | cut -d'>' -f 2 | cut -d'<' -f 1 | cut -d'.' -f 3)
+# TARGETFILE="ttnbridge_$VMAJOR.$VMINOR-$VBUILD.deb"
+# echo "##[set-output name=debuilderfile;]$TARGETFILE"
+# echo "##[set-output name=builddaterelease;]$(date +"%F_%H%M%S")"
