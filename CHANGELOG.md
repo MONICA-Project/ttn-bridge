@@ -1,4 +1,12 @@
 # Changelog
+## 1.2.0
+### New Features
+* Port everything to .NET Core
+* Add Github Actions to automatic create releases on Github and Docker
+### Bugfixes
+### Changes
+* Refactoring
+
 ## 1.1.0
 ### New Features
 * Add support for sensordata.
