@@ -80,13 +80,10 @@ namespace Fraunhofer.Fit.IoT.TTN.Bridge {
         String newjson = JsonMapper.ToJson(new Dictionary<String, Object>() {
             {"Gps", new Dictionary<String, Object>() {
               {"Fix", true },
-              {"Hdop", 0.9 },
               {"Height", Double.Parse(json["payload_fields"]["alt"].ToString()) },
               {"Latitude", Double.Parse(json["payload_fields"]["lat"].ToString()) },
               {"Longitude", Double.Parse(json["payload_fields"]["lon"].ToString()) },
-              {"LastLatitude", Double.Parse(json["payload_fields"]["lat"].ToString()) },
-              {"LastLongitude", Double.Parse(json["payload_fields"]["lon"].ToString()) },
-              {"LastGPSPos", DateTime.UtcNow }
+              {"Satelites", Double.Parse(json["payload_fields"]["sat"].ToString()) },
             } },
             {"Name", json["dev_id"].ToString() },
             {"Rssi", Double.Parse(json["metadata"]["gateways"][0]["rssi"].ToString()) },
