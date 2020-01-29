@@ -1,4 +1,11 @@
 # Changelog
+## 1.2.2 - Add Customisation
+### New Features
+* Allow to setup the fields for tracker per configfile.
+
+### Bugfixes
+### Changes
+
 ## 1.2.1 - New Gateway
 ### New Features
 ### Bugfixes

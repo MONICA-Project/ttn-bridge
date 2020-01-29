@@ -9,14 +9,15 @@
     <Description>Converts data from TTN to local MQTT</Description>
     <Company>Fraunhofer FIT</Company>
     <Authors>BlubbFish</Authors>
-    <Copyright>Copyright © Fraunhofer FIT, BlubbFish 2019 - 21.01.2020</Copyright>
+    <Copyright>Copyright © Fraunhofer FIT, BlubbFish 2019 - 29.01.2020</Copyright>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <PackageProjectUrl>https://github.com/MONICA-Project/ttn-bridge</PackageProjectUrl>
     <RepositoryUrl>https://github.com/MONICA-Project/ttn-bridge.git</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <NeutralLanguage>de-DE</NeutralLanguage>
-    <Version>1.2.1</Version>
+    <Version>1.2.2</Version>
     <PackageReleaseNotes>
+      1.2.2 Add Customisation
       1.2.1 New Gateway
       1.2.0 Port everything to .NET Core
       1.1.0 Add support for sensordata

@@ -7,6 +7,11 @@ server=eu.thethings.network
 user=<Application ID>
 pass=<default key>
 topic=<Application ID>/devices/+/up
+;batt=BatV
+;lat=Latitude
+;lon=Longitude
+;height=alt
+;sat=sat
 
 [sensors]
 type=mqtt

@@ -12,6 +12,12 @@ namespace Fraunhofer.Fit.IoT.TTN.Bridge {
     private ADataBackend ttnt;
     private ADataBackend ttns;
     private ADataBackend mqtt;
+    private InIReader settings;
+    private String tSBatt;
+    private String tSLat;
+    private String tSLon;
+    private String tSHeight;
+    private String tSSat;
 
     static void Main(String[] _1) => new Program();
 
@@ -21,24 +27,37 @@ namespace Fraunhofer.Fit.IoT.TTN.Bridge {
         Helper.WriteError("No settings.ini found. Abord!");
         return;
       }
-      InIReader settings = InIReader.GetInstance("settings");
-      this.logger.SetPath(settings.GetValue("logging", "path"));
+      this.settings = InIReader.GetInstance("settings");
+      this.logger.SetPath(this.settings.GetValue("logging", "path"));
 
-      this.Connect(settings);
+      this.Connect();
       this.Attach();
       this.WaitForShutdown();
       this.Dispose();
     }
 
-    private void Connect(InIReader settings) {
-      this.ttnt = (ADataBackend)ABackend.GetInstance(settings.GetSection("tracker"), ABackend.BackendType.Data);
-      this.ttns = (ADataBackend)ABackend.GetInstance(settings.GetSection("sensors"), ABackend.BackendType.Data);
-      this.mqtt = (ADataBackend)ABackend.GetInstance(settings.GetSection("to"), ABackend.BackendType.Data);
+    private void Connect() {
+      if (this.settings.GetSections(false).Contains("tracker")) {
+        this.ttnt = (ADataBackend)ABackend.GetInstance(this.settings.GetSection("tracker"), ABackend.BackendType.Data);
+      }
+      if (this.settings.GetSections(false).Contains("sensors")) {
+        this.ttns = (ADataBackend)ABackend.GetInstance(this.settings.GetSection("sensors"), ABackend.BackendType.Data);
+      }
+      this.mqtt = (ADataBackend)ABackend.GetInstance(this.settings.GetSection("to"), ABackend.BackendType.Data);
     }
 
     private void Attach() {
-      this.ttnt.MessageIncomming += this.TTNTrackerMessageIncomming;
-      this.ttns.MessageIncomming += this.TTNSensorsMessageIncomming;
+      if (this.settings.GetSections(false).Contains("tracker")) {
+        this.ttnt.MessageIncomming += this.TTNTrackerMessageIncomming;
+        this.tSBatt = this.settings.GetValue("tracker", "batt");
+        this.tSLat = this.settings.GetValue("tracker", "lat");
+        this.tSLon = this.settings.GetValue("tracker", "lon");
+        this.tSHeight = this.settings.GetValue("tracker", "height");
+        this.tSSat = this.settings.GetValue("tracker", "sat");
+      }
+      if (this.settings.GetSections(false).Contains("sensors")) {
+        this.ttns.MessageIncomming += this.TTNSensorsMessageIncomming;
+      }
     }
 
     private async void TTNSensorsMessageIncomming(Object _1, BackendEvent e) => await Task.Run(() => {
@@ -77,28 +96,57 @@ namespace Fraunhofer.Fit.IoT.TTN.Bridge {
     private Tuple<String, String> ConvertTrackerJson(String jsonstring) {
       try {
         JsonData json = JsonMapper.ToObject(jsonstring);
-        String newjson = JsonMapper.ToJson(new Dictionary<String, Object>() {
-            {"Gps", new Dictionary<String, Object>() {
-              {"Fix", true },
-              {"Height", Double.Parse(json["payload_fields"]["alt"].ToString()) },
-              {"Latitude", Double.Parse(json["payload_fields"]["lat"].ToString()) },
-              {"Longitude", Double.Parse(json["payload_fields"]["lon"].ToString()) },
-              {"Satelites", Double.Parse(json["payload_fields"]["sat"].ToString()) },
-            } },
-            {"Name", json["dev_id"].ToString() },
+        Dictionary<String, Object> d = new Dictionary<String, Object>() {
+            {"Gps", new Dictionary<String, Object>() },
             {"Rssi", Double.Parse(json["metadata"]["gateways"][0]["rssi"].ToString()) },
             {"Snr", Double.Parse(json["metadata"]["gateways"][0]["snr"].ToString()) },
             {"Receivedtime", DateTime.UtcNow },
-            {"BatteryLevel", 4.0 }
-          });
+            {"Name", json["dev_id"].ToString() }
+          };
+
+        if (this.tSBatt != null) {
+          d.Add("BatteryLevel", Double.Parse(json["payload_fields"][this.tSBatt].ToString()));
+        } else {
+          d.Add("BatteryLevel", 0);
+        }
+
+        Double lat = 0;
+        if (this.tSLat != null) {
+          lat = Double.Parse(json["payload_fields"][this.tSLat].ToString());
+        }
+        ((Dictionary<String, Object>)d["Gps"]).Add("Latitude", lat);
+
+        Double lon = 0;
+        if (this.tSLon != null) {
+          lon = Double.Parse(json["payload_fields"][this.tSLon].ToString());
+        }
+        ((Dictionary<String, Object>)d["Gps"]).Add("Longitude", lat);
+
+        ((Dictionary<String, Object>)d["Gps"]).Add("Fix", lat != 0 || lon != 0);
+
+        if (this.tSHeight != null) {
+          ((Dictionary<String, Object>)d["Gps"]).Add("Height", Double.Parse(json["payload_fields"][this.tSHeight].ToString()));
+        } else {
+          ((Dictionary<String, Object>)d["Gps"]).Add("Height", 0);
+        }
+
+        if (this.tSSat != null) {
+          ((Dictionary<String, Object>)d["Gps"]).Add("Satelites", Double.Parse(json["payload_fields"][this.tSSat].ToString()));
+        } 
+
+        String newjson = JsonMapper.ToJson(d);
         return new Tuple<String, String>(json["dev_id"].ToString(), newjson);
       } catch { }
       return null;
     }
 
     public override void Dispose() {
-      this.ttnt.Dispose();
-      this.ttns.Dispose();
+      if(this.ttnt != null) {
+        this.ttnt.Dispose();
+      }
+      if(this.ttns != null) {
+        this.ttns.Dispose();
+      }
       this.mqtt.Dispose();
       base.Dispose();
     }
