@@ -1,4 +1,12 @@
 # Changelog
+## 1.2.3 - Bugfix Customisation
+### New Features
+### Bugfixes
+* Assign Longetude lon and not lat
+
+### Changes
+* Make debug output to log nicer
+
 ## 1.2.2 - Add Customisation
 ### New Features
 * Allow to setup the fields for tracker per configfile.
@@ -16,6 +24,7 @@
 ### New Features
 * Port everything to .NET Core
 * Add Github Actions to automatic create releases on Github and Docker
+
 ### Bugfixes
 ### Changes
 * Refactoring
@@ -28,6 +37,7 @@
 ### Bugfixes
 ### Changes
 * Change section `from` to `tracker` in `settings.conf`.
+
 ## 1.0.0
 ### New Features
 * First Version

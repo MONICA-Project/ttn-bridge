@@ -63,16 +63,16 @@ namespace Fraunhofer.Fit.IoT.TTN.Bridge {
     private async void TTNSensorsMessageIncomming(Object _1, BackendEvent e) => await Task.Run(() => {
       Tuple<String, String> json = this.ConvertSensorJson(e.Message);
       if (json != null) {
-        this.mqtt.Send("lora/sensor/" + json.Item1, json.Item2);
-        Console.WriteLine("Umweltdaten konvertiert.");
+        this.mqtt.Send(json.Item1, json.Item2);
+        Console.WriteLine("Mqtt ->: on " + json.Item1 + " set " + json.Item2);
       }
     });
 
     private async void TTNTrackerMessageIncomming(Object _1, BackendEvent e) => await Task.Run(() => {
       Tuple<String, String> json = this.ConvertTrackerJson(e.Message);
       if (json != null) {
-        this.mqtt.Send("lora/data/" + json.Item1, json.Item2);
-        Console.WriteLine("Koordinate konvertiert.");
+        this.mqtt.Send(json.Item1, json.Item2);
+        Console.WriteLine("Mqtt ->: on "+ json.Item1+" set "+ json.Item2);
       }
     });
 
@@ -88,7 +88,7 @@ namespace Fraunhofer.Fit.IoT.TTN.Bridge {
           {"Windspeed", Double.Parse(json["payload_fields"]["windspeed"].ToString()) },
           {"Receivedtime", DateTime.UtcNow } 
         });
-        return new Tuple<String, String>(json["dev_id"].ToString(), newjson);
+        return new Tuple<String, String>("lora/sensor/" + json["dev_id"].ToString(), newjson);
       } catch { }
       return null;
     }
@@ -120,7 +120,7 @@ namespace Fraunhofer.Fit.IoT.TTN.Bridge {
         if (this.tSLon != null) {
           lon = Double.Parse(json["payload_fields"][this.tSLon].ToString());
         }
-        ((Dictionary<String, Object>)d["Gps"]).Add("Longitude", lat);
+        ((Dictionary<String, Object>)d["Gps"]).Add("Longitude", lon);
 
         ((Dictionary<String, Object>)d["Gps"]).Add("Fix", lat != 0 || lon != 0);
 
@@ -135,7 +135,7 @@ namespace Fraunhofer.Fit.IoT.TTN.Bridge {
         } 
 
         String newjson = JsonMapper.ToJson(d);
-        return new Tuple<String, String>(json["dev_id"].ToString(), newjson);
+        return new Tuple<String, String>("lora/data/" + json["dev_id"].ToString(), newjson);
       } catch { }
       return null;
     }

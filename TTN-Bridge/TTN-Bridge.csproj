@@ -15,8 +15,9 @@
     <RepositoryUrl>https://github.com/MONICA-Project/ttn-bridge.git</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <NeutralLanguage>de-DE</NeutralLanguage>
-    <Version>1.2.2</Version>
+    <Version>1.2.3</Version>
     <PackageReleaseNotes>
+      1.2.3 Bugfix Customisation
       1.2.2 Add Customisation
       1.2.1 New Gateway
       1.2.0 Port everything to .NET Core
